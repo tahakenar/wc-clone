@@ -45,11 +45,87 @@ void deleteTestFileIfExists(const std::string& filename) {
     catch(...){}
 }
 
+class WcTester : public testing::Test {
+    public:
+        Wc* wc_obj_;
+        void allocateWcObject(const std::string& input) {
+            wc_obj_ = new Wc{input};
+        }
+
+        void clearWcObject() {
+            delete wc_obj_;
+        }
+
+        unsigned int getBytes() {
+            return wc_obj_->getNumOfBytes();
+        }
+
+        unsigned int getLines() {
+            return wc_obj_->getNumOfLines();
+        }
+
+        unsigned int getWords() {
+            return wc_obj_->getNumOfWords();
+        }
+
+        unsigned int getChars() {
+            return wc_obj_->getNumOfChars();
+        }
+};
+
 // TODO (tahakenar): Test case for invalid inputs (cannot parse properly)
 
 // TODO (tahakenar): Test cases for no filename provided yet options
 
 // Tests regarding member functions
+
+TEST_F(WcTester, GetNumberOfBytes) {
+    writeToTestFile(TEST_FILENAME, TEST_DATA);
+
+    allocateWcObject(GET_NUM_OF_BYTES);
+    auto num_of_bytes = getBytes();
+    clearWcObject();
+
+    EXPECT_EQ(num_of_bytes, NUM_OF_BYTES);
+
+    deleteTestFileIfExists(TEST_FILENAME);
+}
+
+TEST_F(WcTester, GetNumberOfLines) {
+    writeToTestFile(TEST_FILENAME, TEST_DATA);
+
+    allocateWcObject(GET_NUM_OF_LINES);
+    auto num_of_lines = getLines();
+    clearWcObject();
+
+    EXPECT_EQ(num_of_lines, NUM_OF_LINES);
+
+    deleteTestFileIfExists(TEST_FILENAME);
+}
+
+TEST_F(WcTester, GetNumberOfWords) {
+    writeToTestFile(TEST_FILENAME, TEST_DATA);
+
+    allocateWcObject(GET_NUM_OF_WORDS);
+    auto num_of_words = getLines();
+    clearWcObject();
+
+    EXPECT_EQ(num_of_words, NUM_OF_WORDS);
+
+    deleteTestFileIfExists(TEST_FILENAME);
+}
+
+TEST_F(WcTester, GetNumberOfChars) {
+    writeToTestFile(TEST_FILENAME, TEST_DATA);
+
+    allocateWcObject(GET_NUM_OF_CHARS);
+    auto num_of_chars = getChars();
+    clearWcObject();
+
+    EXPECT_EQ(num_of_chars, NUM_OF_CHARS);
+
+    deleteTestFileIfExists(TEST_FILENAME);
+}
 
 // Tests regarding final output
 
@@ -111,7 +187,7 @@ TEST(WcTest, NoOptionsProvidedStdOut) {
 
 TEST(WcTest, NoFilenameProvidedStdOut) {
     
-    Wc wc{GET_OUTPUT_NO_OPTIONS};
+    Wc wc{GET_OUTPUT_NO_FILENAME};
     auto out = wc.getWcOutput();
     
     EXPECT_EQ(out, NO_FILENAME_OUT);

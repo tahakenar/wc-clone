@@ -12,6 +12,7 @@ class Wc {
         unsigned long getNumOfLines();
         unsigned long getNumOfWords();
         unsigned long getNumOfChars();
+    friend class WcTester;
 };
 
 #endif
