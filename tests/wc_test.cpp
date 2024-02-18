@@ -9,6 +9,13 @@
 const std::string TEST_FILENAME = "test.txt";
 const std::string TEST_DATA = "line1\nline2\nline3\nline4 secondWord\n";
 
+const std::string GET_NUM_OF_BYTES = "-c " + TEST_FILENAME;
+const std::string GET_NUM_OF_LINES = "-l " + TEST_FILENAME;
+const std::string GET_NUM_OF_WORDS = "-w " + TEST_FILENAME;
+const std::string GET_NUM_OF_CHARS = "-m " + TEST_FILENAME;
+const std::string GET_OUTPUT_NO_OPTIONS = TEST_FILENAME;
+const std::string GET_OUTPUT_NO_FILENAME = TEST_DATA;
+
 const unsigned int NUM_OF_BYTES = 35;
 const unsigned int NUM_OF_LINES = 4;
 const unsigned int NUM_OF_WORDS = 5;
@@ -20,8 +27,6 @@ const std::string NUM_OF_WORDS_OUT = "       5 " + TEST_FILENAME;
 const std::string NUM_OF_CHARS_OUT = "      35 " + TEST_FILENAME;
 const std::string NO_OPTIONS_OUT = "       4       5      35 " + TEST_FILENAME;
 const std::string NO_FILENAME_OUT = "       4       5      35";
-
- 
 
 // function to write to file
 void writeToTestFile(const std::string& filename, const std::string& data) {
@@ -40,6 +45,9 @@ void deleteTestFileIfExists(const std::string& filename) {
     catch(...){}
 }
 
+// TODO (tahakenar): Test case for invalid inputs (cannot parse properly)
+
+// TODO (tahakenar): Test cases for no filename provided yet options
 
 // Tests regarding member functions
 
@@ -48,7 +56,7 @@ void deleteTestFileIfExists(const std::string& filename) {
 TEST(WcTest, GetNumberOfBytesStdOut) {
     writeToTestFile(TEST_FILENAME, TEST_DATA);
 
-    Wc wc{""};
+    Wc wc{GET_NUM_OF_BYTES};
     auto out = wc.getWcOutput();
 
     EXPECT_EQ(out, NUM_OF_BYTES_OUT);
@@ -60,7 +68,7 @@ TEST(WcTest, GetNumberOfBytesStdOut) {
 TEST(WcTest, GetNumberOfLinesStdOut) {
     writeToTestFile(TEST_FILENAME, TEST_DATA);
 
-    Wc wc{""};
+    Wc wc{GET_NUM_OF_LINES};
     auto out = wc.getWcOutput();
 
     EXPECT_EQ(out, NUM_OF_LINES_OUT);
@@ -72,7 +80,7 @@ TEST(WcTest, GetNumberOfLinesStdOut) {
 TEST(WcTest, GetNumberOfWordsStdOut) {
     writeToTestFile(TEST_FILENAME, TEST_DATA);
 
-    Wc wc{""};
+    Wc wc{GET_NUM_OF_WORDS};
     auto out = wc.getWcOutput();
 
     EXPECT_EQ(out, NUM_OF_WORDS_OUT);
@@ -84,7 +92,7 @@ TEST(WcTest, GetNumberOfWordsStdOut) {
 TEST(WcTest, GetNumberOfCharsStdOut) {
     writeToTestFile(TEST_FILENAME, TEST_DATA);
 
-    Wc wc{""};
+    Wc wc{GET_NUM_OF_CHARS};
     auto out = wc.getWcOutput();
 
     EXPECT_EQ(out, NUM_OF_CHARS_OUT);
@@ -94,7 +102,7 @@ TEST(WcTest, GetNumberOfCharsStdOut) {
 TEST(WcTest, NoOptionsProvidedStdOut) {
     writeToTestFile(TEST_FILENAME, TEST_DATA);
 
-    Wc wc{""};
+    Wc wc{GET_OUTPUT_NO_OPTIONS};
     auto out = wc.getWcOutput();
 
     EXPECT_EQ(out, NO_OPTIONS_OUT);
@@ -103,7 +111,7 @@ TEST(WcTest, NoOptionsProvidedStdOut) {
 
 TEST(WcTest, NoFilenameProvidedStdOut) {
     
-    Wc wc{TEST_DATA};
+    Wc wc{GET_OUTPUT_NO_OPTIONS};
     auto out = wc.getWcOutput();
     
     EXPECT_EQ(out, NO_FILENAME_OUT);
