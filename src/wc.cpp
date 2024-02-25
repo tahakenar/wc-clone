@@ -76,14 +76,17 @@ void Wc::handleFlags() {
 
     if (auto it = flags.find(wc_defs::BYTE_FLAG); it != flags.end()) {
         getBytes_ = true;
+        flags.erase(it);
     } 
     
     if (auto it = flags.find(wc_defs::LINE_FLAG); it != flags.end()) {
         getLines_ = true;
+        flags.erase(it);
     }
 
     if (auto it = flags.find(wc_defs::WORD_FLAG); it != flags.end()) {
         getWords_ = true;
+        flags.erase(it);
     }
 
     // TODO (tahakenar): Handle invalid cases
