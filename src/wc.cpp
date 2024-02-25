@@ -1,6 +1,6 @@
 #include "wc.hpp"
 
-Wc::Wc(const std::string& input) {
+Wc::Wc(char* argv[]) {
 
 }
 
