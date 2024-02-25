@@ -10,22 +10,24 @@
 char TEST_DATA[] = "line1\nline2\nline3\nline4 secondWord\n";
 
 char TEST_FILENAME[] = "test.txt";
+char NON_EXISTENT_FILENAME[] = "testo.txt";
 
 char PROGRAM_NAME[] = "wc";
 
-char BYTE_OPT[] = "-c";
-char LINE_OPT[] = "-l";
-char WORD_OPT[] = "-w";
-char CHAR_OPT[] = "-m";
-char INVALID_OPT[] = "-i";
+char BYTE_FLAG[] = "-c";
+char LINE_FLAG[] = "-l";
+char WORD_FLAG[] = "-w";
+char CHAR_FLAG[] = "-m";
+char INVALID_FLAG[] = "-i";
 
-char* GET_NUM_OF_BYTES[] = {PROGRAM_NAME, BYTE_OPT, TEST_FILENAME};
-char* GET_NUM_OF_LINES[] = {PROGRAM_NAME, LINE_OPT, TEST_FILENAME};
-char* GET_NUM_OF_WORDS[] = {PROGRAM_NAME, WORD_OPT, TEST_FILENAME};
-char* GET_NUM_OF_CHARS[] = {PROGRAM_NAME, CHAR_OPT, TEST_FILENAME};
+char* GET_NUM_OF_BYTES[] = {PROGRAM_NAME, BYTE_FLAG, TEST_FILENAME};
+char* GET_NUM_OF_LINES[] = {PROGRAM_NAME, LINE_FLAG, TEST_FILENAME};
+char* GET_NUM_OF_WORDS[] = {PROGRAM_NAME, WORD_FLAG, TEST_FILENAME};
+char* GET_NUM_OF_CHARS[] = {PROGRAM_NAME, CHAR_FLAG, TEST_FILENAME};
 char* GET_OUTPUT_NO_OPTIONS[] = {PROGRAM_NAME, TEST_FILENAME};
 char* GET_OUTPUT_NO_FILENAME[] = {TEST_DATA};
-char* INVALID_INPUT[] = {PROGRAM_NAME, INVALID_OPT, TEST_FILENAME};
+char* INVALID_INPUT[] = {PROGRAM_NAME, INVALID_FLAG, TEST_FILENAME};
+char* NON_EXISTENT_FILE[] = {PROGRAM_NAME, BYTE_FLAG, NON_EXISTENT_FILENAME};
 
 const unsigned int NUM_OF_BYTES = 35;
 const unsigned int NUM_OF_LINES = 4;
@@ -85,8 +87,10 @@ void deleteTestFileIfExists(const char* filename) {
 // };
 
 // TODO (tahakenar): Test case for invalid inputs (cannot parse properly)
+// TODO (tahakenar): Test case for no file existence
 
 // TODO (tahakenar): Test cases for no filename provided yet options
+
 
 // Tests regarding member functions
 
@@ -139,6 +143,16 @@ void deleteTestFileIfExists(const char* filename) {
 // }
 
 // // Tests regarding final output
+
+TEST(WcTest, NonExistentFilename) {
+    
+    Wc wc{NON_EXISTENT_FILE};
+    auto out = wc.getWcOutput();
+
+    std::string no_file_exists_out = wc_defs::err_msg::NO_FILE_EXISTS + std::string(NON_EXISTENT_FILENAME);
+    EXPECT_EQ(out, no_file_exists_out);
+
+}
 
 TEST(WcTest, GetNumberOfBytesStdOut) {
     writeToTestFile(TEST_FILENAME, TEST_DATA);
