@@ -3,11 +3,7 @@
 // TODO (tahakenar): remove iostream later
 #include <iostream>
 
-Wc::Wc(char* argv[]) : cmdl_{argv}, getBytes_{false}, getLines_{false}, getWords_{false}, getChars_{false} {
-
-
-    
-}
+Wc::Wc(char* argv[]) : cmdl_{argv}, getBytes_{false}, getLines_{false}, getWords_{false}, getChars_{false} {}
 
 std::string Wc::getWcOutput() {
     std::stringstream output;
@@ -24,7 +20,8 @@ std::string Wc::getWcOutput() {
         if (getLines_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfLines());
         }
-        if (getBytes_) {
+        // Gives the same output according to my locale
+        if (getBytes_ || getChars_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfBytes());
         }
 
@@ -85,6 +82,11 @@ void Wc::handleFlags() {
 
     if (auto it = flags.find(wc_defs::WORD_FLAG); it != flags.end()) {
         getWords_ = true;
+        flags.erase(it);
+    }
+
+    if (auto it = flags.find(wc_defs::CHAR_FLAG); it != flags.end()) {
+        getChars_ = true;
         flags.erase(it);
     }
 
