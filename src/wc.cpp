@@ -18,6 +18,10 @@ std::string Wc::getWcOutput() {
         checkFileExistence();
         openFile();
 
+        if (getWords_) {
+            output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfWords());
+        }
+
         if (getLines_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfLines());
         }
@@ -69,12 +73,17 @@ void Wc::handleFlags() {
         getWords_ = true;
         getChars_ = true;
     }
+
     if (auto it = flags.find(wc_defs::BYTE_FLAG); it != flags.end()) {
         getBytes_ = true;
     } 
     
     if (auto it = flags.find(wc_defs::LINE_FLAG); it != flags.end()) {
         getLines_ = true;
+    }
+
+    if (auto it = flags.find(wc_defs::WORD_FLAG); it != flags.end()) {
+        getWords_ = true;
     }
 
     // TODO (tahakenar): Handle invalid cases
@@ -112,8 +121,18 @@ unsigned long Wc::getNumOfLines() {
 }
 
 unsigned long Wc::getNumOfWords() {
-    unsigned long dummy{0};
-    return dummy;
+    unsigned long num_of_words{0};
+
+    std::string line;
+    while (std::getline(file_, line)) {
+        std::istringstream iss(line);
+        std::string word;
+        while (iss >> word) {
+            num_of_words++;
+        }
+    }
+
+    return num_of_words;
 }
 
 unsigned long Wc::getNumOfChars() {
