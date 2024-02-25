@@ -26,9 +26,10 @@ char* GET_NUM_OF_WORDS[] = {PROGRAM_NAME, WORD_FLAG, TEST_FILENAME};
 char* GET_NUM_OF_CHARS[] = {PROGRAM_NAME, CHAR_FLAG, TEST_FILENAME};
 char* GET_OUTPUT_NO_OPTIONS[] = {PROGRAM_NAME, TEST_FILENAME};
 char* GET_OUTPUT_STDIN[] = {TEST_DATA};
-char* INVALID_INPUT[] = {PROGRAM_NAME, INVALID_FLAG, TEST_FILENAME};
+char* INVALID_FLAGS[] = {PROGRAM_NAME, INVALID_FLAG, TEST_FILENAME};
 char* NON_EXISTENT_FILE[] = {PROGRAM_NAME, BYTE_FLAG, NON_EXISTENT_FILENAME};
 char* NO_FILENAME_PROVIDED[] = {PROGRAM_NAME, BYTE_FLAG};
+char* TOO_MANY_ARGUMENTS[] = {PROGRAM_NAME, TEST_FILENAME, PROGRAM_NAME};
 
 const unsigned int NUM_OF_BYTES = 35;
 const unsigned int NUM_OF_LINES = 4;
@@ -65,6 +66,14 @@ TEST(WcTest, NoFilenameProvided) {
     auto out = wc.getWcOutput();
 
     EXPECT_EQ(out, wc_defs::err_msg::NO_FILENAME_PROVIDED);
+}
+
+TEST(WcTest, InvalidNumberOfArgs) {
+
+    Wc wc{TOO_MANY_ARGUMENTS};
+    auto out = wc.getWcOutput();
+
+    EXPECT_EQ(out, wc_defs::err_msg::INVALID_ARGS);
 }
 
 TEST(WcTest, NonExistentFilename) {

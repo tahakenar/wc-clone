@@ -14,6 +14,7 @@ namespace wc_defs
 
     namespace err_msg {
         const std::string NO_FILENAME_PROVIDED{"No filename provided"};
+        const std::string INVALID_ARGS{"Invalid number of / types of arguments..."};
         const std::string NO_FILE_EXISTS{"No such file exists: "};
         const std::string CANNOT_OPEN_FILE{"Cannot open file: "};
     }

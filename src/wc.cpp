@@ -101,7 +101,7 @@ void Wc::handleFilename() {
     if (positional_args.size() < 2) {
         throw std::runtime_error(wc_defs::err_msg::NO_FILENAME_PROVIDED);
     } else if (positional_args.size() > 2) {
-        // ... exception: invalid number of positional args.
+        throw std::runtime_error(wc_defs::err_msg::INVALID_ARGS);
     } else {
         filename_ = std::string{positional_args[1]};
     }
