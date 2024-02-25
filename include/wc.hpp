@@ -12,15 +12,8 @@
 class Wc {
     public:
         Wc(char* argv[]);
-
         std::string getWcOutput();
 
-        // TODO (tahakenar): Make them private later on
-        void handleFlags();
-        void handleFilename();
-        void checkFileExistence();
-        void openFile();
-        void closeFile();
 
     private:
         argh::parser cmdl_;
@@ -38,10 +31,12 @@ class Wc {
         unsigned long getNumOfWords();
         unsigned long getNumOfChars();
 
+        void handleFlags();
+        void handleFilename();
         
-
-
-    friend class WcTester;
+        void checkFileExistence();
+        void openFile();
+        void closeFile();
 };
 
 #endif

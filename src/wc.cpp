@@ -21,7 +21,6 @@ std::string Wc::getWcOutput() {
         if (getWords_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfWords());
         }
-
         if (getLines_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfLines());
         }
