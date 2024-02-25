@@ -32,7 +32,8 @@ std::string Wc::getWcOutput() {
         output.clear();
         output << err.what();
     } catch(...) {
-        // .. handle exceptions to generate an informative output
+        output.clear();
+        output << wc_defs::err_msg::UNKNOWN_ERR;
     }
 
     return output.str();

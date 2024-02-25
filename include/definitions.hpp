@@ -17,6 +17,7 @@ namespace wc_defs
         const std::string INVALID_ARGS{"Invalid number of / types of arguments..."};
         const std::string NO_FILE_EXISTS{"No such file exists: "};
         const std::string CANNOT_OPEN_FILE{"Cannot open file: "};
+        const std::string UNKNOWN_ERR{"An unknown error has occured"};
     }
 } // namespace wc_defs
 
