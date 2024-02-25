@@ -13,6 +13,7 @@ namespace wc_defs
     const char CHAR_FLAG[] = "m";
 
     namespace err_msg {
+        const std::string NO_FILENAME_PROVIDED{"No filename provided"};
         const std::string NO_FILE_EXISTS{"No such file exists: "};
         const std::string CANNOT_OPEN_FILE{"Cannot open file: "};
     }

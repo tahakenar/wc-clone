@@ -25,9 +25,10 @@ char* GET_NUM_OF_LINES[] = {PROGRAM_NAME, LINE_FLAG, TEST_FILENAME};
 char* GET_NUM_OF_WORDS[] = {PROGRAM_NAME, WORD_FLAG, TEST_FILENAME};
 char* GET_NUM_OF_CHARS[] = {PROGRAM_NAME, CHAR_FLAG, TEST_FILENAME};
 char* GET_OUTPUT_NO_OPTIONS[] = {PROGRAM_NAME, TEST_FILENAME};
-char* GET_OUTPUT_NO_FILENAME[] = {TEST_DATA};
+char* GET_OUTPUT_STDIN[] = {TEST_DATA};
 char* INVALID_INPUT[] = {PROGRAM_NAME, INVALID_FLAG, TEST_FILENAME};
 char* NON_EXISTENT_FILE[] = {PROGRAM_NAME, BYTE_FLAG, NON_EXISTENT_FILENAME};
+char* NO_FILENAME_PROVIDED[] = {PROGRAM_NAME, BYTE_FLAG};
 
 const unsigned int NUM_OF_BYTES = 35;
 const unsigned int NUM_OF_LINES = 4;
@@ -39,7 +40,7 @@ const std::string NUM_OF_LINES_OUT = "       4 " + std::string(TEST_FILENAME);
 const std::string NUM_OF_WORDS_OUT = "       5 " + std::string(TEST_FILENAME);
 const std::string NUM_OF_CHARS_OUT = "      35 " + std::string(TEST_FILENAME);
 const std::string NO_OPTIONS_OUT = "       4       5      35 " + std::string(TEST_FILENAME);
-const std::string NO_FILENAME_OUT = "       4       5      35";
+const std::string STDIN_OUT = "       4       5      35";
 
 // function to write to file
 void writeToTestFile(const char* filename, const char* data) {
@@ -56,6 +57,14 @@ void deleteTestFileIfExists(const char* filename) {
        std::filesystem::remove(test_file);
     }
     catch(...){}
+}
+
+TEST(WcTest, NoFilenameProvided) {
+
+    Wc wc{NO_FILENAME_PROVIDED};
+    auto out = wc.getWcOutput();
+
+    EXPECT_EQ(out, wc_defs::err_msg::NO_FILENAME_PROVIDED);
 }
 
 TEST(WcTest, NonExistentFilename) {
@@ -124,12 +133,12 @@ TEST(WcTest, NoOptionsProvidedStdOut) {
     deleteTestFileIfExists(TEST_FILENAME);
 }
 
-TEST(WcTest, NoFilenameProvidedStdOut) {
+TEST(WcTest, Stdin) {
     
-    Wc wc{GET_OUTPUT_NO_FILENAME};
+    Wc wc{GET_OUTPUT_STDIN};
     auto out = wc.getWcOutput();
     
-    EXPECT_EQ(out, NO_FILENAME_OUT);
+    EXPECT_EQ(out, STDIN_OUT);
 }
 
 int main(int argc, char** argv)

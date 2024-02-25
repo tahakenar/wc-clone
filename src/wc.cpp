@@ -99,7 +99,7 @@ void Wc::handleFilename() {
 
     // first arg is the program name (wc in this case)
     if (positional_args.size() < 2) {
-        // ... exception: lack of filename
+        throw std::runtime_error(wc_defs::err_msg::NO_FILENAME_PROVIDED);
     } else if (positional_args.size() > 2) {
         // ... exception: invalid number of positional args.
     } else {
