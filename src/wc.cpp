@@ -3,28 +3,28 @@
 // TODO (tahakenar): remove iostream later
 #include <iostream>
 
-Wc::Wc(char* argv[]) : cmdl_{argv}, getBytes_{false}, getLines_{false}, getWords_{false}, getChars_{false} {}
+Wc::Wc(char* argv[]) : cmdl_{argv}, get_bytes_{false}, get_lines_{false}, get_words_{false}, get_chars_{false} {}
 
 std::string Wc::getWcOutput() {
     std::stringstream output;
 
     try {
+        // TODO (tahakenar): Handle stdin
         handleFlags();
         handleFilename();
         checkFileExistence();
         openFile();
 
-        if (getWords_) {
+        if (get_words_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfWords());
         }
-        if (getLines_) {
+        if (get_lines_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfLines());
         }
         // Gives the same output according to my locale
-        if (getBytes_ || getChars_) {
+        if (get_bytes_ || get_chars_) {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfBytes());
         }
-
         closeFile();
         output << " " << filename_;
 
@@ -60,44 +60,48 @@ void Wc::closeFile() {
 
 void Wc::handleFlags() {
     
-    // TODO (tahakenar): Handle compounded flags
-
     auto flags = cmdl_.flags();
 
+    // If no flags provided, assume to print all options
     if (flags.size() == 0) {
-        getBytes_ = true;
-        getLines_ = true;
-        getWords_ = true;
-        getChars_ = true;
+        get_bytes_ = true;
+        get_lines_ = true;
+        get_words_ = true;
+        get_chars_ = true;
+        return;
     }
 
-    if (auto it = flags.find(wc_defs::BYTE_FLAG); it != flags.end()) {
-        getBytes_ = true;
-        flags.erase(it);
-    } 
-    
-    if (auto it = flags.find(wc_defs::LINE_FLAG); it != flags.end()) {
-        getLines_ = true;
-        flags.erase(it);
-    }
+    auto eraseProvidedOpt = [](std::string& str, char opt) {
+        auto end_iter = str.end();
+        auto erase_iter = str.erase(std::remove(str.begin(), str.end(), opt), str.end());
+        if (erase_iter != end_iter) {
+            std::cout << "Deleted: " << opt << "\n";
+            return true;
+        }
+        return false;
+    };
 
-    if (auto it = flags.find(wc_defs::WORD_FLAG); it != flags.end()) {
-        getWords_ = true;
-        flags.erase(it);
-    }
+    auto checkSingleFlag = [](std::multiset<std::string>& flag_set, const std::string& search_flag) {
+        if (auto it = flag_set.find(search_flag); it != flag_set.end()) {
+            flag_set.erase(it);
+            return true;
+        }
+        return false;
+    };
 
-    if (auto it = flags.find(wc_defs::CHAR_FLAG); it != flags.end()) {
-        getChars_ = true;
-        flags.erase(it);
-    }
+    get_bytes_ |= checkSingleFlag(flags, std::string{wc_defs::BYTE_OPT});
+    get_lines_ |= checkSingleFlag(flags, std::string{wc_defs::LINE_OPT});
+    get_chars_ |= checkSingleFlag(flags, std::string{wc_defs::CHAR_OPT});
+    get_words_ |= checkSingleFlag(flags, std::string{wc_defs::WORD_OPT});
 
-    // TODO (tahakenar): Handle invalid cases
+    // No flags must be seen after derivation...
+    if (flags.size() > 0) {
+        throw std::runtime_error(wc_defs::err_msg::INVALID_ARGS);
+    }
 }
 
 void Wc::handleFilename() {
-    
     auto positional_args = cmdl_.pos_args();
-
     // first arg is the program name (wc in this case)
     if (positional_args.size() < 2) {
         throw std::runtime_error(wc_defs::err_msg::NO_FILENAME_PROVIDED);
@@ -116,18 +120,15 @@ unsigned long Wc::getNumOfBytes() {
 
 unsigned long Wc::getNumOfLines() {
     unsigned long num_of_lines{0};
-
     std::string line;
     while (std::getline(file_, line)) {
         num_of_lines++;
     }
-
     return num_of_lines;
 }
 
 unsigned long Wc::getNumOfWords() {
     unsigned long num_of_words{0};
-
     std::string line;
     while (std::getline(file_, line)) {
         std::istringstream iss(line);
@@ -136,7 +137,6 @@ unsigned long Wc::getNumOfWords() {
             num_of_words++;
         }
     }
-
     return num_of_words;
 }
 

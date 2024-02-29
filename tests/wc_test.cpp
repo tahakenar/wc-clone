@@ -6,7 +6,6 @@
 
 #include "wc.hpp"
 
-// const std::string TEST_DATA = "line1\nline2\nline3\nline4 secondWord\n";
 char TEST_DATA[] = "line1\nline2\nline3\nline4 secondWord\n";
 
 char TEST_FILENAME[] = "test.txt";

@@ -2,6 +2,7 @@
 #define WC_HPP
 
 #include <iomanip>
+#include <algorithm>
 #include <sstream>
 #include <fstream>
 #include <filesystem>
@@ -14,17 +15,16 @@ class Wc {
         Wc(char* argv[]);
         std::string getWcOutput();
 
-
     private:
         argh::parser cmdl_;
 
         std::string filename_;
         std::ifstream file_;
 
-        bool getBytes_;
-        bool getLines_;
-        bool getWords_;
-        bool getChars_;
+        bool get_bytes_;
+        bool get_lines_;
+        bool get_words_;
+        bool get_chars_;
 
         unsigned long getNumOfBytes();
         unsigned long getNumOfLines();
@@ -33,7 +33,7 @@ class Wc {
 
         void handleFlags();
         void handleFilename();
-        
+
         void checkFileExistence();
         void openFile();
         void closeFile();

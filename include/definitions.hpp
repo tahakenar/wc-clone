@@ -7,10 +7,10 @@ namespace wc_defs
 {
     constexpr int OUTPUT_WIDTH_PER_OPTION = 8; 
 
-    const char BYTE_FLAG[] = "c";
-    const char LINE_FLAG[] = "l";
-    const char WORD_FLAG[] = "w";
-    const char CHAR_FLAG[] = "m";
+    const char BYTE_OPT = 'c';
+    const char LINE_OPT = 'l';
+    const char WORD_OPT = 'w';
+    const char CHAR_OPT = 'm';
 
     namespace err_msg {
         const std::string NO_FILENAME_PROVIDED{"No filename provided"};
@@ -20,7 +20,5 @@ namespace wc_defs
         const std::string UNKNOWN_ERR{"An unknown error has occured"};
     }
 } // namespace wc_defs
-
-
 
 #endif
