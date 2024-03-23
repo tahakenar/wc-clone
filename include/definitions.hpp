@@ -12,6 +12,8 @@ namespace wc_defs
     const char WORD_OPT = 'w';
     const char CHAR_OPT = 'm';
 
+    const char OPT_ARR[4] = {BYTE_OPT, LINE_OPT, WORD_OPT, CHAR_OPT}; 
+
     namespace err_msg {
         const std::string NO_FILENAME_PROVIDED{"No filename provided"};
         const std::string INVALID_ARGS{"Invalid number of / types of arguments..."};

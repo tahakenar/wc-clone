@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <filesystem>
 
@@ -35,12 +36,18 @@ const unsigned int NUM_OF_LINES = 4;
 const unsigned int NUM_OF_WORDS = 5;
 const unsigned int NUM_OF_CHARS = 35;
 
-const std::string NUM_OF_BYTES_OUT = "      35 " + std::string(TEST_FILENAME);
-const std::string NUM_OF_LINES_OUT = "       4 " + std::string(TEST_FILENAME);
-const std::string NUM_OF_WORDS_OUT = "       5 " + std::string(TEST_FILENAME);
-const std::string NUM_OF_CHARS_OUT = "      35 " + std::string(TEST_FILENAME);
-const std::string NO_OPTIONS_OUT = "       4       5      35 " + std::string(TEST_FILENAME);
-const std::string STDIN_OUT = "       4       5      35";
+auto add_numeric_out = [](const int& data) {
+    std::stringstream ss;
+    ss << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << data << " ";
+    return ss.str();
+};
+
+const std::string NUM_OF_BYTES_OUT = add_numeric_out(NUM_OF_BYTES) + std::string(TEST_FILENAME);
+const std::string NUM_OF_LINES_OUT = add_numeric_out(NUM_OF_LINES) + std::string(TEST_FILENAME);
+const std::string NUM_OF_WORDS_OUT = add_numeric_out(NUM_OF_WORDS) + std::string(TEST_FILENAME);
+const std::string NUM_OF_CHARS_OUT = add_numeric_out(NUM_OF_CHARS) + std::string(TEST_FILENAME);
+const std::string NO_OPTIONS_OUT = add_numeric_out(NUM_OF_LINES) + add_numeric_out(NUM_OF_WORDS) + add_numeric_out(NUM_OF_BYTES) + std::string(TEST_FILENAME);
+const std::string STDIN_OUT = add_numeric_out(NUM_OF_LINES) + add_numeric_out(NUM_OF_WORDS) + add_numeric_out(NUM_OF_BYTES);
 
 // function to write to file
 void writeToTestFile(const char* filename, const char* data) {
