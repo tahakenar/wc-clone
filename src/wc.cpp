@@ -2,34 +2,51 @@
 
 // TODO (tahakenar): remove iostream later
 #include <iostream>
+#include <sstream>
+#include <unistd.h>
 
-Wc::Wc(char* argv[]) : cmdl_{argv}, get_bytes_{false}, get_lines_{false}, get_words_{false}, get_chars_{false} {}
+Wc::Wc(char *argv[]) : cmdl_{argv}, get_bytes_{false}, get_lines_{false}, get_words_{false}, get_chars_{false} {}
 
-std::string Wc::getWcOutput() {
+std::string Wc::getWcOutput()
+{
+    input_.clear();
     std::stringstream output;
 
-    try {
-        // TODO (tahakenar): Handle stdin
-        handleFilename();
-        handleFlags();
-        checkFileExistence();
+    try
+    {
+        // check if piped input is present or not
+        if (isatty(fileno(stdin))) {
+            handleFilename();
+            checkFileExistence();
+            readFile();
+        } else {
+            getStdin();
+        }
 
-        if (get_lines_) {
+        handleFlags();
+
+        if (get_lines_)
+        {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfLines());
         }
-        if (get_words_) {
+        if (get_words_)
+        {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfWords());
         }
         // Gives the same output according to my locale
-        if (get_bytes_ || get_chars_) {
+        if (get_bytes_ || get_chars_)
+        {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfBytes());
         }
         output << " " << filename_;
-
-    } catch (const std::runtime_error &err) {
+    }
+    catch (const std::runtime_error &err)
+    {
         output.clear();
         output << err.what();
-    } catch(...) {
+    }
+    catch (...)
+    {
         output.clear();
         output << wc_defs::err_msg::UNKNOWN_ERR;
     }
@@ -37,30 +54,47 @@ std::string Wc::getWcOutput() {
     return output.str();
 }
 
-void Wc::checkFileExistence() {
-    if (!std::filesystem::exists(filename_)) {
+void Wc::checkFileExistence()
+{
+    if (!std::filesystem::exists(filename_))
+    {
         std::string err_msg = wc_defs::err_msg::NO_FILE_EXISTS + filename_;
         throw std::runtime_error(err_msg);
     }
 }
 
-void Wc::openFile() {
+void Wc::getStdin()
+{
+    std::cout << "got stdin\n";
+    std::string line;
+    while (std::getline(std::cin, line))
+    {
+        input_ << line << '\n';
+    }
+    std::cout << input_.str();
+}
+
+void Wc::readFile() {
     file_.open(filename_);
-    if (!file_.is_open()) {
+    if (!file_.is_open())
+    {
         std::string err_msg = wc_defs::err_msg::CANNOT_OPEN_FILE + filename_;
         throw std::runtime_error(err_msg);
     }
-}
-
-void Wc::closeFile() {
+    std::string line;
+    while (std::getline(file_, line)) {
+        input_ << line << '\n';
+    }
     file_.close();
 }
 
-void Wc::handleFlags() {
-   auto flags = cmdl_.flags();
+void Wc::handleFlags()
+{
+    auto flags = cmdl_.flags();
 
     // If no flags provided, assume to print all options
-    if (flags.size() == 0) {
+    if (flags.size() == 0)
+    {
         get_bytes_ = true;
         get_lines_ = true;
         get_words_ = true;
@@ -68,80 +102,97 @@ void Wc::handleFlags() {
         return;
     }
 
-    std::cout << "flags: \n";
-    for (auto f : flags) {
-        std::cout << f << '\n';
-        if (auto found = f.find(wc_defs::BYTE_OPT) != std::string::npos) {
+    for (auto f : flags)
+    {
+        if (auto found = f.find(wc_defs::BYTE_OPT) != std::string::npos)
+        {
             get_bytes_ = true;
             f.erase(std::remove(f.begin(), f.end(), wc_defs::BYTE_OPT), f.end());
         }
 
-        if (auto found = f.find(wc_defs::CHAR_OPT) != std::string::npos) {
+        if (auto found = f.find(wc_defs::CHAR_OPT) != std::string::npos)
+        {
             get_chars_ = true;
             f.erase(std::remove(f.begin(), f.end(), wc_defs::CHAR_OPT), f.end());
         }
 
-        if (auto found = f.find(wc_defs::LINE_OPT) != std::string::npos) {
+        if (auto found = f.find(wc_defs::LINE_OPT) != std::string::npos)
+        {
             get_lines_ = true;
             f.erase(std::remove(f.begin(), f.end(), wc_defs::LINE_OPT), f.end());
         }
 
-        if (auto found = f.find(wc_defs::WORD_OPT) != std::string::npos) {
+        if (auto found = f.find(wc_defs::WORD_OPT) != std::string::npos)
+        {
             get_words_ = true;
             f.erase(std::remove(f.begin(), f.end(), wc_defs::WORD_OPT), f.end());
         }
 
-        if (f.size() > 0) {
+        if (f.size() > 0)
+        {
             throw std::runtime_error(wc_defs::err_msg::INVALID_ARGS);
         }
     }
 }
 
-void Wc::handleFilename() {
+void Wc::handleFilename()
+{
     auto positional_args = cmdl_.pos_args();
     // first arg is the program name (wc in this case)
-    if (positional_args.size() < 2) {
+    if (positional_args.size() < 2)
+    {
         throw std::runtime_error(wc_defs::err_msg::NO_FILENAME_PROVIDED);
-    } else if (positional_args.size() > 2) {
+    }
+    else if (positional_args.size() > 2)
+    {
         throw std::runtime_error(wc_defs::err_msg::INVALID_ARGS);
-    } else {
+    }
+    else
+    {
         filename_ = std::string{positional_args[1]};
     }
 }
 
-unsigned long Wc::getNumOfBytes() {
+unsigned long Wc::getNumOfBytes()
+{
     unsigned long num_of_bytes{0};
-    num_of_bytes = std::filesystem::file_size(filename_);
+    num_of_bytes = input_.str().length();
     return num_of_bytes;
 }
 
-unsigned long Wc::getNumOfLines() {
+unsigned long Wc::getNumOfLines()
+{
     unsigned long num_of_lines{0};
     std::string line;
-    openFile();
-    while (std::getline(file_, line)) {
+    while (std::getline(input_, line))
+    {
         num_of_lines++;
     }
-    closeFile();
+    input_.clear();
+    input_.seekg(0, std::ios::beg);
     return num_of_lines;
 }
 
-unsigned long Wc::getNumOfWords() {
+unsigned long Wc::getNumOfWords()
+{
     unsigned long num_of_words{0};
     std::string line;
-    openFile();
-    while (std::getline(file_, line)) {
+    while (std::getline(input_, line))
+    {
         std::istringstream iss(line);
         std::string word;
-        while (iss >> word) {
+        while (iss >> word)
+        {
             num_of_words++;
         }
     }
-    closeFile();
+    input_.clear();
+    input_.seekg(0, std::ios::beg);
     return num_of_words;
 }
 
-unsigned long Wc::getNumOfChars() {
+unsigned long Wc::getNumOfChars()
+{
     unsigned long dummy{0};
     return dummy;
 }

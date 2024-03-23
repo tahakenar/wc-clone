@@ -7,6 +7,7 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
+#include <sstream>
 #include <argh.h>
 #include "definitions.hpp"
 
@@ -19,6 +20,8 @@ class Wc {
         argh::parser cmdl_;
 
         std::string filename_;
+
+        std::stringstream input_;
         std::ifstream file_;
 
         bool get_bytes_;
@@ -33,6 +36,9 @@ class Wc {
 
         void handleFlags();
         void handleFilename();
+
+        void getStdin();
+        void readFile();
 
         void checkFileExistence();
         void openFile();
