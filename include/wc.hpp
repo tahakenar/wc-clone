@@ -35,7 +35,6 @@ class Wc {
         unsigned long getNumOfChars();
 
         void handleFlags();
-        void handleFilename();
 
         void getStdin();
         void readFile();

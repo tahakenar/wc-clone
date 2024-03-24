@@ -11,20 +11,19 @@ std::string Wc::getWcOutput()
 {
     input_.clear();
     std::stringstream output;
-
     try
-    {
-        // check if piped input is present or not
-        if (isatty(fileno(stdin))) {
-            handleFilename();
-            checkFileExistence();
-            readFile();
-        } else {
-            getStdin();
-        }
-
+    { 
         handleFlags();
 
+        auto positional_args = cmdl_.pos_args();
+
+        if (positional_args.size() < 2) {
+            getStdin();
+        } else {
+            filename_ = std::string{positional_args[1]};
+            checkFileExistence();
+            readFile();
+        }
         if (get_lines_)
         {
             output << std::setw(wc_defs::OUTPUT_WIDTH_PER_OPTION) << std::right << std::to_string(getNumOfLines());
@@ -65,13 +64,11 @@ void Wc::checkFileExistence()
 
 void Wc::getStdin()
 {
-    std::cout << "got stdin\n";
     std::string line;
     while (std::getline(std::cin, line))
     {
         input_ << line << '\n';
     }
-    std::cout << input_.str();
 }
 
 void Wc::readFile() {
@@ -132,24 +129,6 @@ void Wc::handleFlags()
         {
             throw std::runtime_error(wc_defs::err_msg::INVALID_ARGS);
         }
-    }
-}
-
-void Wc::handleFilename()
-{
-    auto positional_args = cmdl_.pos_args();
-    // first arg is the program name (wc in this case)
-    if (positional_args.size() < 2)
-    {
-        throw std::runtime_error(wc_defs::err_msg::NO_FILENAME_PROVIDED);
-    }
-    else if (positional_args.size() > 2)
-    {
-        throw std::runtime_error(wc_defs::err_msg::INVALID_ARGS);
-    }
-    else
-    {
-        filename_ = std::string{positional_args[1]};
     }
 }
 
